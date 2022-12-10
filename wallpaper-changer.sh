@@ -23,17 +23,21 @@ HOUR=$(date +%H)
 # Redirect stdout and stderr to logger
 exec 1> >(logger -t wallpaper-changer) 2>&1
 
+# Configure dbus (required for dconf to work from cron)
+# Probably breaks if no session bus at that address
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/1000/bus"
+
 # Set the wallpaper based on the time of day
 if [ $HOUR -ge $DAWN_START -a $HOUR -lt $DAY_START ]; then
-  echo "Setting wallpaper to '$WALLPAPER_DAWN' because it is $HOUR hours"
-  dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_DAWN'"
+    echo "Setting wallpaper to '$WALLPAPER_DAWN' because it is $HOUR hours"
+    dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_DAWN'"
 elif [ $HOUR -ge $DAY_START -a $HOUR -lt $DUSK_START ]; then
-  echo "Setting wallpaper to '$WALLPAPER_DAY' because it is $HOUR hours"
-  dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_DAY'"
+    echo "Setting wallpaper to '$WALLPAPER_DAY' because it is $HOUR hours"
+    dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_DAY'"
 elif [ $HOUR -ge $DUSK_START -a $HOUR -lt $NIGHT_START ]; then
-  echo "Setting wallpaper to '$WALLPAPER_DUSK' because it is $HOUR hours"
-  dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_DUSK'"
+    echo "Setting wallpaper to '$WALLPAPER_DUSK' because it is $HOUR hours"
+    dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_DUSK'"
 else
-  echo "Setting wallpaper to '$WALLPAPER_NIGHT' because it is $HOUR hours"
-  dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_NIGHT'"
+    echo "Setting wallpaper to '$WALLPAPER_NIGHT' because it is $HOUR hours"
+    dconf write $CONFIG_PATH "'$WALLPAPER_DIRECTORY/$WALLPAPER_NIGHT'"
 fi
